@@ -2,71 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Special Message for Ranjith</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Ranjith</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            overflow: hidden;
-            background-color: #080808;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            overflow: hidden; 
+            background-color: #050505; 
+            font-family: sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
             height: 100vh;
+            width: 100vw;
         }
-
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        canvas { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            display: block;
         }
-
-        .container {
-            position: relative;
-            z-index: 10;
-        }
-
-        /* Premium Button Design */
+        .container { position: relative; z-index: 10; }
         .touch-me-btn {
-            padding: 18px 45px;
+            padding: 16px 35px;
             font-size: 1.1rem;
-            font-weight: 700;
+            font-weight: bold;
             color: #fff;
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            background: linear-gradient(45deg, #00dbde, #fc00ff);
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            box-shadow: 0 10px 30px rgba(110, 142, 251, 0.4);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            outline: none;
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(252, 0, 255, 0.5);
+            transition: opacity 0.5s ease;
         }
-
-        .touch-me-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 15px 40px rgba(167, 119, 227, 0.6);
-            background: linear-gradient(135deg, #a777e3, #6e8efb);
-        }
-
-        .touch-me-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Smoothly hide the button */
-        .fade-out {
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.8s ease;
-        }
+        .hidden { opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -82,30 +52,27 @@
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
         const btn = document.getElementById('mainBtn');
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
         let particles = [];
         let animationActive = false;
 
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
         class Particle {
             constructor(targetX, targetY, color) {
-                // Spawn particles from the bottom or edges for a "floating up" feel
+                // Mobile optimization: spawn closer to view to avoid lag
                 this.x = Math.random() * canvas.width;
-                this.y = canvas.height + Math.random() * 100; 
+                this.y = Math.random() > 0.5 ? -20 : canvas.height + 20;
                 
                 this.targetX = targetX;
                 this.targetY = targetY;
                 this.color = color;
-                
-                // Randomized size for a more natural look
-                this.baseSize = Math.random() * 1.5 + 1;
-                this.size = this.baseSize;
-                
-                // Slow, elegant speed
-                this.velocity = 0.012; 
-                this.shimmerSpeed = Math.random() * 0.05;
-                this.angle = Math.random() * 360;
+                this.size = Math.random() * 1.5 + 0.8;
+                this.velocity = 0.015; // Smooth but slightly faster for mobile responsiveness
             }
 
             draw() {
@@ -116,48 +83,43 @@
             }
 
             update() {
-                // Move towards the target text position
-                let dx = this.targetX - this.x;
-                let dy = this.targetY - this.y;
-                
-                this.x += dx * this.velocity;
-                this.y += dy * this.velocity;
-
-                // Add a subtle shimmering effect once they are close
-                this.angle += this.shimmerSpeed;
-                this.size = this.baseSize + Math.sin(this.angle) * 0.5;
+                this.x += (this.targetX - this.x) * this.velocity;
+                this.y += (this.targetY - this.y) * this.velocity;
             }
         }
 
-        function init() {
+        function initAnimation() {
             particles = [];
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Set font size based on screen width
-            const fontSize = Math.min(canvas.width / 12, 80);
-            ctx.font = `bold ${fontSize}px "Segoe UI", Arial`;
+            const isMobile = canvas.width < 600;
+            const fontSize = isMobile ? canvas.width * 0.12 : 70;
+            
+            ctx.font = `bold ${fontSize}px Arial`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillStyle = 'white';
 
-            const text = "I LIKE YOU RANJITH";
-            ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+            // MOBILE FIX: Draw text in two lines if the screen is narrow
+            if (isMobile) {
+                ctx.fillText("I LIKE YOU", canvas.width / 2, canvas.height / 2 - fontSize * 0.6);
+                ctx.fillText("RANJITH", canvas.width / 2, canvas.height / 2 + fontSize * 0.6);
+            } else {
+                ctx.fillText("I LIKE YOU RANJITH", canvas.width / 2, canvas.height / 2);
+            }
 
-            // Scan the text pixels
             const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Create particles only where the text was drawn
-            // Higher number (y += 5) means better performance
-            for (let y = 0; y < canvas.height; y += 5) {
-                for (let x = 0; x < canvas.width; x += 5) {
+            // Performance tweak: y += 6, x += 6 to keep particle count low for mobile
+            const gap = isMobile ? 5 : 4;
+
+            for (let y = 0; y < canvas.height; y += gap) {
+                for (let x = 0; x < canvas.width; x += gap) {
                     const index = (y * canvas.width + x) * 4;
-                    const alpha = pixels[index + 3];
-                    
-                    if (alpha > 128) {
-                        // Using a variety of premium purple/blue/pink shades
-                        const hue = 250 + Math.random() * 60; 
-                        const color = `hsla(${hue}, 80%, 70%, 0.9)`;
+                    if (pixels[index + 3] > 128) {
+                        const hue = 280 + Math.random() * 40;
+                        const color = `hsla(${hue}, 100%, 70%, 0.8)`;
                         particles.push(new Particle(x, y, color));
                     }
                 }
@@ -165,8 +127,7 @@
         }
 
         function animate() {
-            // Motion blur effect
-            ctx.fillStyle = 'rgba(8, 8, 8, 0.15)';
+            ctx.fillStyle = 'rgba(5, 5, 5, 0.2)'; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             particles.forEach(p => {
@@ -177,19 +138,10 @@
         }
 
         btn.addEventListener('click', () => {
-            if (!animationActive) {
-                btn.classList.add('fade-out');
-                init();
-                animate();
-                animationActive = true;
-            }
-        });
-
-        // Handle Window Resize
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            if (animationActive) init();
+            btn.classList.add('hidden');
+            animationActive = true;
+            initAnimation();
+            animate();
         });
     </script>
 </body>
