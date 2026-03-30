@@ -13,7 +13,7 @@
 
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
             background-attachment: fixed;
             display: flex;
             flex-direction: column;
@@ -24,29 +24,21 @@
             position: relative;
         }
 
-        /* Floating particles background */
-        body::before {
-            content: '';
+        /* Cute floating hearts background */
+        .bg-heart {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(2px 2px at 20px 30px, #eee, transparent),
-                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
-                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent);
-            background-repeat: repeat;
-            background-size: 200px 100px;
-            animation: float 20s infinite linear;
-            z-index: 0;
+            font-size: 1.5rem;
+            color: rgba(255, 182, 193, 0.3);
+            animation: floatHeart 15s infinite linear;
             pointer-events: none;
+            z-index: 1;
         }
 
-        @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); }
-            100% { transform: translateY(-20px) rotate(360deg); }
+        @keyframes floatHeart {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
         }
 
         .container {
@@ -56,66 +48,60 @@
         }
 
         h1 {
-            color: #fff;
-            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: #ff69b4;
+            font-size: clamp(2.5rem, 6vw, 4rem);
             margin-bottom: 2rem;
-            text-shadow: 0 0 20px rgba(255,255,255,0.5);
-            animation: glow 2s ease-in-out infinite alternate;
+            text-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+            animation: bounce 2s infinite;
+            z-index: 11;
+            position: relative;
         }
 
-        @keyframes glow {
-            from { text-shadow: 0 0 20px rgba(255,255,255,0.5), 0 0 30px rgba(255,255,255,0.3); }
-            to { text-shadow: 0 0 30px rgba(255,255,255,0.8), 0 0 40px rgba(255,255,255,0.5); }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
         }
 
         .pom-button {
             position: relative;
-            padding: 1.5rem 3rem;
-            font-size: clamp(1.2rem, 4vw, 1.8rem);
-            font-weight: 700;
+            padding: 1.8rem 3.5rem;
+            font-size: clamp(1.4rem, 5vw, 2rem);
+            font-weight: 800;
             color: #fff;
-            background: linear-gradient(45deg, #ff6b6b, #feca57, #ff9ff3, #54a0ff);
-            background-size: 400% 400%;
-            border: none;
-            border-radius: 50px;
+            background: linear-gradient(45deg, #ff69b4, #ff1493, #ff69b4, #ff1493);
+            background-size: 300% 300%;
+            border: 3px solid rgba(255,255,255,0.4);
+            border-radius: 60px;
             cursor: pointer;
             box-shadow: 
-                0 10px 30px rgba(0,0,0,0.3),
-                0 0 0 1px rgba(255,255,255,0.3);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                0 15px 35px rgba(255, 105, 180, 0.4),
+                inset 0 0 20px rgba(255,255,255,0.3);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             overflow: hidden;
-            min-width: 280px;
-            backdrop-filter: blur(10px);
+            min-width: 300px;
+            backdrop-filter: blur(15px);
+            animation: pulse 2s infinite;
         }
 
-        .pom-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: left 0.5s;
-        }
-
-        .pom-button:hover::before {
-            left: 100%;
+        @keyframes pulse {
+            0% { box-shadow: 0 15px 35px rgba(255, 105, 180, 0.4), inset 0 0 20px rgba(255,255,255,0.3); }
+            50% { box-shadow: 0 20px 45px rgba(255, 105, 180, 0.6), inset 0 0 25px rgba(255,255,255,0.4); }
+            100% { box-shadow: 0 15px 35px rgba(255, 105, 180, 0.4), inset 0 0 20px rgba(255,255,255,0.3); }
         }
 
         .pom-button:hover {
-            transform: translateY(-5px) scale(1.05);
+            transform: translateY(-8px) scale(1.08);
             box-shadow: 
-                0 20px 40px rgba(0,0,0,0.4),
-                0 0 0 1px rgba(255,255,255,0.5),
-                0 0 50px rgba(255,107,107,0.5);
+                0 25px 50px rgba(255, 105, 180, 0.6),
+                inset 0 0 30px rgba(255,255,255,0.5);
         }
 
         .pom-button:active {
-            transform: translateY(-2px) scale(1.02);
+            transform: translateY(-3px) scale(1.03);
         }
 
-        /* Particle Container */
+        /* HIDDEN by default */
         .particles {
             position: fixed;
             top: 0;
@@ -124,108 +110,99 @@
             height: 100vh;
             pointer-events: none;
             z-index: 100;
+            display: none; /* HIDDEN UNTIL CLICK */
         }
 
-        .heart {
+        .heart-particle {
             position: absolute;
-            font-size: clamp(1rem, 3vw, 2rem);
-            color: #ff6b6b;
+            font-size: clamp(1.2rem, 4vw, 2.5rem);
             pointer-events: none;
-            animation: heartFloat 3s ease-out forwards;
-            text-shadow: 0 0 10px currentColor;
+            animation: heartFly 4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         }
 
-        @keyframes heartFloat {
+        @keyframes heartFly {
             0% {
                 opacity: 1;
                 transform: translateY(0) scale(0) rotate(0deg);
             }
-            10% {
+            15% {
                 opacity: 1;
-                transform: translateY(-10px) scale(1) rotate(5deg);
+                transform: translateY(-20px) scale(1.2) rotate(10deg);
             }
-            90% {
+            85% {
                 opacity: 1;
-                transform: translateY(-200px) scale(1) rotate(360deg);
+                transform: translateY(-300px) scale(1) rotate(720deg);
             }
             100% {
                 opacity: 0;
-                transform: translateY(-250px) scale(0.5) rotate(720deg);
+                transform: translateY(-350px) scale(0.3) rotate(1080deg);
             }
         }
 
-        /* Text Animation */
+        /* Love Text - HIDDEN by default */
         .love-text {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: clamp(2rem, 8vw, 4rem);
+            font-size: clamp(2.5rem, 10vw, 5rem);
             font-weight: 900;
-            background: linear-gradient(45deg, #ff6b6b, #feca57, #ff9ff3, #54a0ff);
+            background: linear-gradient(45deg, #ff1493, #ff69b4, #ffb6c1, #ff1493);
+            background-size: 400% 400%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 50px rgba(255,255,255,0.5);
+            text-shadow: 0 0 40px rgba(255, 20, 147, 0.8);
             opacity: 0;
             z-index: 200;
             pointer-events: none;
-            animation: loveAppear 2s ease-out 0.5s forwards;
+            display: none;
+            animation: loveExplode 3s ease-out forwards;
+            white-space: nowrap;
         }
 
-        @keyframes loveAppear {
+        @keyframes loveExplode {
             0% {
                 opacity: 0;
-                transform: translate(-50%, -50%) scale(0.5) rotate(-10deg);
+                transform: translate(-50%, -50%) scale(0.3) rotate(-15deg);
             }
-            50% {
+            30% {
                 opacity: 1;
-                transform: translate(-50%, -50%) scale(1.2) rotate(2deg);
+                transform: translate(-50%, -50%) scale(1.3) rotate(3deg);
+            }
+            70% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.05) rotate(0deg);
             }
             100% {
                 opacity: 0;
-                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                transform: translate(-50%, -50%) scale(1.1) rotate(5deg);
             }
         }
 
-        /* Mobile optimizations */
         @media (max-width: 480px) {
             .pom-button {
-                padding: 1.2rem 2.5rem;
-                min-width: 250px;
-            }
-            
-            h1 {
-                margin-bottom: 1.5rem;
-            }
-        }
-
-        /* Success ripple effect */
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.6);
-            transform: scale(0);
-            animation: ripple-animation 0.6s linear;
-            pointer-events: none;
-        }
-
-        @keyframes ripple-animation {
-            to {
-                transform: scale(4);
-                opacity: 0;
+                padding: 1.5rem 3rem;
+                min-width: 280px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Background floating hearts -->
+    <div class="bg-heart" style="left: 10%; animation-delay: 0s;">💕</div>
+    <div class="bg-heart" style="left: 20%; animation-delay: 2s;">💖</div>
+    <div class="bg-heart" style="left: 80%; animation-delay: 5s;">💗</div>
+    <div class="bg-heart" style="left: 90%; animation-delay: 8s;">💝</div>
+
     <div class="container">
-        <h1>Hey Tejaswi! 💕</h1>
+        <h1>Hey Tejaswi! 🎀</h1>
         <button class="pom-button" id="pomBtn">
-            🎀 POM POM 🎀
+            ✨ POM POM ✨
         </button>
     </div>
 
+    <!-- HIDDEN until click -->
     <div class="particles" id="particles"></div>
     <div class="love-text" id="loveText">I LIKE YOU TEJASWI 💖✨</div>
 
@@ -233,104 +210,108 @@
         const pomBtn = document.getElementById('pomBtn');
         const particlesContainer = document.getElementById('particles');
         const loveText = document.getElementById('loveText');
+        let audioContext;
 
-        // Pom Pom Sound (using Web Audio API for mobile compatibility)
+        // 🎵 FIXED BETTER POM POM SOUND
         function playPomPomSound() {
-            // Create oscillator for pom pom sound
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator1 = audioContext.createOscillator();
-            const gainNode1 = audioContext.createGain();
+            // Initialize audio context if not exists
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
             
-            oscillator1.connect(gainNode1);
-            gainNode1.connect(audioContext.destination);
-            
-            oscillator1.frequency.setValueAtTime(800, audioContext.currentTime);
-            oscillator1.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
-            
-            gainNode1.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode1.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-            
-            oscillator1.start(audioContext.currentTime);
-            oscillator1.stop(audioContext.currentTime + 0.2);
+            // Resume context for mobile
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
 
-            // Second pom for "pom pom"
+            // POM 1 - High cheerful note
+            const osc1 = audioContext.createOscillator();
+            const gain1 = audioContext.createGain();
+            osc1.connect(gain1);
+            gain1.connect(audioContext.destination);
+            
+            osc1.type = 'sine';
+            osc1.frequency.setValueAtTime(880, audioContext.currentTime); // A5 note
+            osc1.frequency.exponentialRampToValueAtTime(660, audioContext.currentTime + 0.15);
+            
+            gain1.gain.setValueAtTime(0.4, audioContext.currentTime);
+            gain1.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+            
+            osc1.start(audioContext.currentTime);
+            osc1.stop(audioContext.currentTime + 0.2);
+
+            // POM 2 - Slightly lower, bouncy
             setTimeout(() => {
-                const oscillator2 = audioContext.createOscillator();
-                const gainNode2 = audioContext.createGain();
+                const osc2 = audioContext.createOscillator();
+                const gain2 = audioContext.createGain();
+                osc2.connect(gain2);
+                gain2.connect(audioContext.destination);
                 
-                oscillator2.connect(gainNode2);
-                gainNode2.connect(audioContext.destination);
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(784, audioContext.currentTime); // G5 note
+                osc2.frequency.exponentialRampToValueAtTime(523, audioContext.currentTime + 0.15);
                 
-                oscillator2.frequency.setValueAtTime(900, audioContext.currentTime);
-                oscillator2.frequency.exponentialRampToValueAtTime(500, audioContext.currentTime + 0.1);
+                gain2.gain.setValueAtTime(0.4, audioContext.currentTime);
+                gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
                 
-                gainNode2.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-                
-                oscillator2.start(audioContext.currentTime);
-                oscillator2.stop(audioContext.currentTime + 0.2);
-            }, 100);
+                osc2.start(audioContext.currentTime);
+                osc2.stop(audioContext.currentTime + 0.2);
+            }, 120);
         }
 
-        // Create heart particles
+        // Create 40+ beautiful particles ONLY on click
         function createParticles() {
-            particlesContainer.innerHTML = '';
+            // Show particles container
+            particlesContainer.style.display = 'block';
             loveText.style.display = 'block';
             
-            for (let i = 0; i < 30; i++) {
+            const hearts = ['💖', '💕', '💗', '💝', '✨', '🌟', '🎀', '⭐'];
+            
+            for (let i = 0; i < 40; i++) {
                 setTimeout(() => {
                     const heart = document.createElement('div');
-                    heart.className = 'heart';
-                    heart.innerHTML = ['💖', '💕', '💗', '✨', '🌟', '🎀'][Math.floor(Math.random() * 6)];
+                    heart.className = 'heart-particle';
+                    heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
                     heart.style.left = Math.random() * 100 + '%';
-                    heart.style.animationDelay = Math.random() * 0.3 + 's';
-                    heart.style.fontSize = (Math.random() * 1.5 + 0.8) + 'rem';
+                    heart.style.top = '100%';
+                    heart.style.animationDelay = (Math.random() * 0.5) + 's';
+                    
+                    // Random size and color variation
+                    const size = 0.8 + Math.random() * 1.5;
+                    heart.style.fontSize = size + 'rem';
                     
                     particlesContainer.appendChild(heart);
                     
-                    setTimeout(() => heart.remove(), 3000);
-                }, i * 50);
+                    // Remove after animation
+                    setTimeout(() => {
+                        if (heart.parentNode) {
+                            heart.remove();
+                        }
+                    }, 4500);
+                }, i * 60);
             }
         }
 
-        // Ripple effect on click
-        function createRipple(event) {
-            const button = event.currentTarget;
-            const circle = document.createElement('span');
-            const diameter = Math.max(button.clientWidth, button.clientHeight);
-            const radius = diameter / 2;
-            
-            circle.style.width = circle.style.height = `${diameter}px`;
-            circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
-            circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
-            circle.classList.add('ripple');
-            
-            const ripple = button.getElementsByClassName('ripple')[0];
-            if (ripple) ripple.remove();
-            
-            button.appendChild(circle);
-        }
-
-        // Button click handler
-        pomBtn.addEventListener('click', (e) => {
-            playPomPomSound();
-            createParticles();
-            createRipple(e);
-            
-            // Reset love text after animation
+        // Reset everything after animation
+        function resetAnimation() {
             setTimeout(() => {
+                particlesContainer.style.display = 'none';
                 loveText.style.display = 'none';
                 particlesContainer.innerHTML = '';
-            }, 3000);
+            }, 4000);
+        }
+
+        // CLICK HANDLER
+        pomBtn.addEventListener('click', (e) => {
+            playPomPomSound();      // 🎵 SOUND
+            createParticles();      // ✨ PARTICLES ONLY ON CLICK
+            resetAnimation();       // Reset after 4s
         });
 
-        // Resume audio context on first touch (mobile requirement)
-        document.addEventListener('touchstart', function() {
-            if (!window.audioContextResumed) {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                audioContext.resume().then(() => {
-                    window.audioContextResumed = true;
-                });
+        // Mobile touch fix - resume audio on first touch
+        document.addEventListener('touchstart', () => {
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
             }
         }, { once: true });
     </script>
