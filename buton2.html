@@ -1,319 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pom Pom for Tejaswi 💖</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pom Pom</title>
 
-        body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
-            background-attachment: fixed;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden;
-            position: relative;
-        }
+<style>
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#141e30,#243b55);
+    font-family:sans-serif;
+    overflow:hidden;
+}
 
-        /* Cute floating hearts background */
-        .bg-heart {
-            position: fixed;
-            font-size: 1.5rem;
-            color: rgba(255, 182, 193, 0.3);
-            animation: floatHeart 15s infinite linear;
-            pointer-events: none;
-            z-index: 1;
-        }
+/* BUTTON */
+button{
+    padding:20px 50px;
+    font-size:1.8rem;
+    border:none;
+    border-radius:50px;
+    background:linear-gradient(45deg,#ff416c,#ff4b2b);
+    color:white;
+    cursor:pointer;
+    transition:0.15s;
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
 
-        @keyframes floatHeart {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
-        }
+/* Press effect */
+button:active{
+    transform:scale(0.9);
+    box-shadow:0 5px 15px rgba(0,0,0,0.4) inset;
+}
 
-        .container {
-            text-align: center;
-            z-index: 10;
-            position: relative;
-        }
+/* Vibrate */
+@keyframes vibrate{
+    0%{ transform:translate(0); }
+    20%{ transform:translate(-2px,2px); }
+    40%{ transform:translate(2px,-2px); }
+    60%{ transform:translate(-2px,-2px); }
+    80%{ transform:translate(2px,2px); }
+    100%{ transform:translate(0); }
+}
 
-        h1 {
-            color: #ff69b4;
-            font-size: clamp(2.5rem, 6vw, 4rem);
-            margin-bottom: 2rem;
-            text-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
-            animation: bounce 2s infinite;
-            z-index: 11;
-            position: relative;
-        }
+.vibrate{
+    animation:vibrate 0.15s linear infinite;
+}
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
-        }
+/* PARTICLES */
+.particle{
+    position:absolute;
+    font-size:1.5rem;
+    animation:float 4s linear forwards;
+}
 
-        .pom-button {
-            position: relative;
-            padding: 1.8rem 3.5rem;
-            font-size: clamp(1.4rem, 5vw, 2rem);
-            font-weight: 800;
-            color: #fff;
-            background: linear-gradient(45deg, #ff69b4, #ff1493, #ff69b4, #ff1493);
-            background-size: 300% 300%;
-            border: 3px solid rgba(255,255,255,0.4);
-            border-radius: 60px;
-            cursor: pointer;
-            box-shadow: 
-                0 15px 35px rgba(255, 105, 180, 0.4),
-                inset 0 0 20px rgba(255,255,255,0.3);
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            overflow: hidden;
-            min-width: 300px;
-            backdrop-filter: blur(15px);
-            animation: pulse 2s infinite;
-        }
+@keyframes float{
+    0%{
+        transform:translateY(0) scale(0.5);
+        opacity:1;
+    }
+    100%{
+        transform:translateY(-300px) scale(1.2);
+        opacity:0;
+    }
+}
 
-        @keyframes pulse {
-            0% { box-shadow: 0 15px 35px rgba(255, 105, 180, 0.4), inset 0 0 20px rgba(255,255,255,0.3); }
-            50% { box-shadow: 0 20px 45px rgba(255, 105, 180, 0.6), inset 0 0 25px rgba(255,255,255,0.4); }
-            100% { box-shadow: 0 15px 35px rgba(255, 105, 180, 0.4), inset 0 0 20px rgba(255,255,255,0.3); }
-        }
+/* TEXT */
+#text{
+    position:absolute;
+    font-size:3rem;
+    color:#fff;
+    opacity:0;
+    transform:scale(0.5);
+    transition:all 1.5s ease;
+    text-align:center;
+}
 
-        .pom-button:hover {
-            transform: translateY(-8px) scale(1.08);
-            box-shadow: 
-                0 25px 50px rgba(255, 105, 180, 0.6),
-                inset 0 0 30px rgba(255,255,255,0.5);
-        }
-
-        .pom-button:active {
-            transform: translateY(-3px) scale(1.03);
-        }
-
-        /* HIDDEN by default */
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-            z-index: 100;
-            display: none; /* HIDDEN UNTIL CLICK */
-        }
-
-        .heart-particle {
-            position: absolute;
-            font-size: clamp(1.2rem, 4vw, 2.5rem);
-            pointer-events: none;
-            animation: heartFly 4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-
-        @keyframes heartFly {
-            0% {
-                opacity: 1;
-                transform: translateY(0) scale(0) rotate(0deg);
-            }
-            15% {
-                opacity: 1;
-                transform: translateY(-20px) scale(1.2) rotate(10deg);
-            }
-            85% {
-                opacity: 1;
-                transform: translateY(-300px) scale(1) rotate(720deg);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-350px) scale(0.3) rotate(1080deg);
-            }
-        }
-
-        /* Love Text - HIDDEN by default */
-        .love-text {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: clamp(2.5rem, 10vw, 5rem);
-            font-weight: 900;
-            background: linear-gradient(45deg, #ff1493, #ff69b4, #ffb6c1, #ff1493);
-            background-size: 400% 400%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 40px rgba(255, 20, 147, 0.8);
-            opacity: 0;
-            z-index: 200;
-            pointer-events: none;
-            display: none;
-            animation: loveExplode 3s ease-out forwards;
-            white-space: nowrap;
-        }
-
-        @keyframes loveExplode {
-            0% {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0.3) rotate(-15deg);
-            }
-            30% {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1.3) rotate(3deg);
-            }
-            70% {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1.05) rotate(0deg);
-            }
-            100% {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(1.1) rotate(5deg);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .pom-button {
-                padding: 1.5rem 3rem;
-                min-width: 280px;
-            }
-        }
-    </style>
+.show{
+    opacity:1;
+    transform:scale(1);
+}
+</style>
 </head>
+
 <body>
-    <!-- Background floating hearts -->
-    <div class="bg-heart" style="left: 10%; animation-delay: 0s;">💕</div>
-    <div class="bg-heart" style="left: 20%; animation-delay: 2s;">💖</div>
-    <div class="bg-heart" style="left: 80%; animation-delay: 5s;">💗</div>
-    <div class="bg-heart" style="left: 90%; animation-delay: 8s;">💝</div>
 
-    <div class="container">
-        <h1>Hey Tejaswi! 🎀</h1>
-        <button class="pom-button" id="pomBtn">
-            ✨ POM POM ✨
-        </button>
-    </div>
+<button id="btn">POM POM</button>
+<div id="text">I LIKE YOU TEJASWI 💖</div>
 
-    <!-- HIDDEN until click -->
-    <div class="particles" id="particles"></div>
-    <div class="love-text" id="loveText">I LIKE YOU TEJASWI 💖✨</div>
+<script>
+let audioCtx;
 
-    <script>
-        const pomBtn = document.getElementById('pomBtn');
-        const particlesContainer = document.getElementById('particles');
-        const loveText = document.getElementById('loveText');
-        let audioContext;
+// 🔊 LORRY HORN SOUND
+function playSound(){
+    if(!audioCtx){
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
 
-        // 🎵 FIXED BETTER POM POM SOUND
-        function playPomPomSound() {
-            // Initialize audio context if not exists
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            
-            // Resume context for mobile
-            if (audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
+    const now = audioCtx.currentTime;
 
-            // POM 1 - High cheerful note
-            const osc1 = audioContext.createOscillator();
-            const gain1 = audioContext.createGain();
-            osc1.connect(gain1);
-            gain1.connect(audioContext.destination);
-            
-            osc1.type = 'sine';
-            osc1.frequency.setValueAtTime(880, audioContext.currentTime); // A5 note
-            osc1.frequency.exponentialRampToValueAtTime(660, audioContext.currentTime + 0.15);
-            
-            gain1.gain.setValueAtTime(0.4, audioContext.currentTime);
-            gain1.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-            
-            osc1.start(audioContext.currentTime);
-            osc1.stop(audioContext.currentTime + 0.2);
+    const gain = audioCtx.createGain();
+    gain.connect(audioCtx.destination);
+    gain.gain.setValueAtTime(0.9, now);
 
-            // POM 2 - Slightly lower, bouncy
-            setTimeout(() => {
-                const osc2 = audioContext.createOscillator();
-                const gain2 = audioContext.createGain();
-                osc2.connect(gain2);
-                gain2.connect(audioContext.destination);
-                
-                osc2.type = 'sine';
-                osc2.frequency.setValueAtTime(784, audioContext.currentTime); // G5 note
-                osc2.frequency.exponentialRampToValueAtTime(523, audioContext.currentTime + 0.15);
-                
-                gain2.gain.setValueAtTime(0.4, audioContext.currentTime);
-                gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-                
-                osc2.start(audioContext.currentTime);
-                osc2.stop(audioContext.currentTime + 0.2);
-            }, 120);
-        }
+    const osc1 = audioCtx.createOscillator();
+    const osc2 = audioCtx.createOscillator();
 
-        // Create 40+ beautiful particles ONLY on click
-        function createParticles() {
-            // Show particles container
-            particlesContainer.style.display = 'block';
-            loveText.style.display = 'block';
-            
-            const hearts = ['💖', '💕', '💗', '💝', '✨', '🌟', '🎀', '⭐'];
-            
-            for (let i = 0; i < 40; i++) {
-                setTimeout(() => {
-                    const heart = document.createElement('div');
-                    heart.className = 'heart-particle';
-                    heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
-                    heart.style.left = Math.random() * 100 + '%';
-                    heart.style.top = '100%';
-                    heart.style.animationDelay = (Math.random() * 0.5) + 's';
-                    
-                    // Random size and color variation
-                    const size = 0.8 + Math.random() * 1.5;
-                    heart.style.fontSize = size + 'rem';
-                    
-                    particlesContainer.appendChild(heart);
-                    
-                    // Remove after animation
-                    setTimeout(() => {
-                        if (heart.parentNode) {
-                            heart.remove();
-                        }
-                    }, 4500);
-                }, i * 60);
-            }
-        }
+    osc1.type = "square";
+    osc2.type = "sawtooth";
 
-        // Reset everything after animation
-        function resetAnimation() {
-            setTimeout(() => {
-                particlesContainer.style.display = 'none';
-                loveText.style.display = 'none';
-                particlesContainer.innerHTML = '';
-            }, 4000);
-        }
+    osc1.frequency.setValueAtTime(200, now);
+    osc2.frequency.setValueAtTime(230, now);
 
-        // CLICK HANDLER
-        pomBtn.addEventListener('click', (e) => {
-            playPomPomSound();      // 🎵 SOUND
-            createParticles();      // ✨ PARTICLES ONLY ON CLICK
-            resetAnimation();       // Reset after 4s
-        });
+    osc1.connect(gain);
+    osc2.connect(gain);
 
-        // Mobile touch fix - resume audio on first touch
-        document.addEventListener('touchstart', () => {
-            if (audioContext && audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
-        }, { once: true });
-    </script>
+    osc1.start(now);
+    osc2.start(now);
+
+    osc1.stop(now + 0.4);
+    osc2.stop(now + 0.4);
+}
+
+// ✨ PARTICLES (slow)
+function createParticles(){
+    const icons = ["💖","✨","💗","⭐"];
+
+    for(let i=0;i<25;i++){
+        setTimeout(()=>{
+            let p = document.createElement("div");
+            p.className="particle";
+            p.innerHTML = icons[Math.floor(Math.random()*icons.length)];
+
+            p.style.left = Math.random()*100 + "vw";
+            p.style.bottom = "0";
+
+            document.body.appendChild(p);
+
+            setTimeout(()=>p.remove(),4000);
+        }, i*120);
+    }
+}
+
+// CLICK
+const btn = document.getElementById("btn");
+
+btn.onclick = ()=>{
+    playSound();
+    createParticles();
+
+    // 📳 Vibrate button
+    btn.classList.add("vibrate");
+
+    setTimeout(()=>{
+        btn.classList.remove("vibrate");
+    }, 400);
+
+    // 💖 Show text
+    setTimeout(()=>{
+        document.getElementById("text").classList.add("show");
+    }, 600);
+};
+</script>
+
 </body>
 </html>
