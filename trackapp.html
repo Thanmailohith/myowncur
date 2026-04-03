@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Expense Tracker Pro | Thanmai Lohith DeSouza</title>
+    <style>
+        :root {
+            /* Theme Variables - Dark (Default) */
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --success: #00b894;
+            --danger: #ff7675;
+            --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-sub: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --panel-bg: #1a1a2e;
+        }
+
+        /* Light Mode Overrides */
+        body.light-mode {
+            --bg-gradient: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --text-main: #2d3436;
+            --text-sub: rgba(0, 0, 0, 0.5);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --panel-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- THEME TOGGLE --- */
+        .theme-switch {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            z-index: 101;
+        }
+
+        /* --- AUTH & CARDS --- */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            padding: 25px;
+            border-radius: 25px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: rgba(128, 128, 128, 0.1);
+            color: var(--text-main);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+        }
+
+        button:active { transform: scale(0.97); }
+
+        /* --- DASHBOARD --- */
+        .balance-display {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .balance-amount {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin: 10px 0;
+            letter-spacing: -1px;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .stat-label { font-size: 0.75rem; color: var(--text-sub); text-transform: uppercase; letter-spacing: 1px; }
+        .stat-val { font-size: 1.2rem; font-weight: bold; margin-top: 5px; }
+
+        .income { color: var(--success); }
+        .expense { color: var(--danger); }
+
+        /* --- TRANSACTION HISTORY --- */
+        .history-list {
+            margin-top: 10px;
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .history-list::-webkit-scrollbar { width: 4px; }
+        .history-list::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 10px; }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .item-info strong { display: block; font-size: 1rem; }
+        .item-info span { font-size: 0.75rem; color: var(--text-sub); }
+
+        /* --- ADD PANEL --- */
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0; left: 0;
+            width: 100%;
+            background: var(--panel-bg);
+            padding: 30px 25px;
+            border-radius: 30px 30px 0 0;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.2);
+        }
+
+        .bottom-sheet.active { transform: translateY(0); }
+
+        .fab {
+            position: fixed;
+            bottom: 30px; right: 30px;
+            width: 65px; height: 65px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; color: white;
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
+            cursor: pointer; z-index: 999;
+        }
+
+        .hidden { display: none !important; }
+
+        .dev-footer {
+            text-align: center;
+            font-size: 0.65rem;
+            margin-top: 30px;
+            letter-spacing: 2px;
+            opacity: 0.5;
+            color: var(--text-main);
+        }
+    </style>
+</head>
+<body>
+
+<div class="theme-switch" onclick="toggleTheme()" id="theme-icon">🌙</div>
+
+<div class="container">
+    
+    <div id="auth-box" class="glass-card" style="margin-top: 60px; text-align: center;">
+        <h2 id="auth-title">Welcome</h2>
+        <p style="color: var(--text-sub); font-size: 0.9rem; margin-bottom: 25px;">Track your riches securely.</p>
+        <input type="text" id="user" placeholder="Username">
+        <input type="password" id="pass" placeholder="Password">
+        <button onclick="authAction()" id="main-btn">Login</button>
+        <p onclick="toggleAuthMode()" id="switch-auth" style="margin-top: 20px; font-size: 0.85rem; color: var(--primary); cursor: pointer;">New here? Register</p>
+        <div class="dev-footer">BY THANMAI LOHITH DESOUZA</div>
+    </div>
+
+    <div id="main-app" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+                <span style="color: var(--text-sub); font-size: 0.9rem;">Hello,</span>
+                <div style="font-size: 1.4rem; font-weight: bold;" id="display-name">User</div>
+            </div>
+            <button onclick="location.reload()" style="width: auto; padding: 8px 15px; font-size: 0.7rem; background: var(--danger)">Logout</button>
+        </div>
+
+        <div class="glass-card balance-display">
+            <span class="stat-label">Available Balance</span>
+            <div class="balance-amount" id="total-balance">₹0</div>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">This Month</div>
+                <div class="stat-val expense" id="month-val">₹0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">This Year</div>
+                <div class="stat-val expense" id="year-val">₹0</div>
+            </div>
+        </div>
+
+        <h3 style="margin-top: 25px; font-weight: 600;">History</h3>
+        <div class="glass-card" style="padding: 10px 20px;">
+            <div id="history" class="history-list">
+                <p style="text-align: center; color: var(--text-sub);">No transactions yet.</p>
+            </div>
+        </div>
+
+        <div class="dev-footer" style="margin-bottom: 100px;">THANMAI LOHITH DESOUZA • 2026</div>
+    </div>
+</div>
+
+<div class="fab hidden" id="add-btn" onclick="openPanel()">+</div>
+
+<div class="bottom-sheet" id="sheet">
+    <div style="width: 40px; height: 5px; background: var(--glass-border); border-radius: 10px; margin: -15px auto 20px auto;"></div>
+    <h3 style="margin-top: 0;">Add Transaction</h3>
+    <input type="text" id="item-desc" placeholder="Title (e.g. Salary, Rent)">
+    <input type="number" id="item-amt" placeholder="Amount in ₹">
+    <select id="item-type">
+        <option value="expense">Expense (Spend)</option>
+        <option value="income">Income (Get)</option>
+    </select>
+    <button onclick="saveItem()">Add to Ledger</button>
+    <button onclick="closePanel()" style="background: transparent; color: var(--text-sub); margin-top: 10px; box-shadow: none;">Dismiss</button>
+</div>
+
+<script>
+    let loggedUser = null;
+    let isLogin = true;
+    let data = [];
+
+    // --- THEME ENGINE ---
+    function toggleTheme() {
+        const body = document.body;
+        const icon = document.getElementById('theme-icon');
+        body.classList.toggle('light-mode');
+        
+        const isLight = body.classList.contains('light-mode');
+        icon.innerText = isLight ? "☀️" : "🌙";
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    }
+
+    // Apply saved theme on load
+    if(localStorage.getItem('theme') === 'light') toggleTheme();
+
+    // --- AUTH ---
+    function toggleAuthMode() {
+        isLogin = !isLogin;
+        document.getElementById('auth-title').innerText = isLogin ? "Welcome" : "Join Us";
+        document.getElementById('main-btn').innerText = isLogin ? "Login" : "Register";
+        document.getElementById('switch-auth').innerText = isLogin ? "New here? Register" : "Have account? Login";
+    }
+
+    function authAction() {
+        const u = document.getElementById('user').value.trim();
+        const p = document.getElementById('pass').value.trim();
+        if(!u || !p) return alert("Please enter details");
+
+        if(isLogin) {
+            const saved = JSON.parse(localStorage.getItem(`user_${u}`));
+            if(saved && saved.p === p) {
+                startApp(u);
+            } else {
+                alert("Invalid user or password");
+            }
+        } else {
+            localStorage.setItem(`user_${u}`, JSON.stringify({u, p}));
+            alert("Registered! Now Login.");
+            toggleAuthMode();
+        }
+    }
+
+    // --- APP LOGIC ---
+    function startApp(username) {
+        loggedUser = username;
+        document.getElementById('auth-box').classList.add('hidden');
+        document.getElementById('main-app').classList.remove('hidden');
+        document.getElementById('add-btn').classList.remove('hidden');
+        document.getElementById('display-name').innerText = username;
+        
+        refreshData();
+    }
+
+    function openPanel() { document.getElementById('sheet').classList.add('active'); }
+    function closePanel() { document.getElementById('sheet').classList.remove('active'); }
+
+    function saveItem() {
+        const desc = document.getElementById('item-desc').value;
+        const amt = parseFloat(document.getElementById('item-amt').value);
+        const type = document.getElementById('item-type').value;
+        
+        if(!desc || isNaN(amt)) return alert("Check inputs!");
+
+        const entry = {
+            id: Date.now(),
+            desc,
+            amt: type === 'expense' ? -amt : amt,
+            ts: new Date()
+        };
+
+        data.unshift(entry);
+        localStorage.setItem(`data_${loggedUser}`, JSON.stringify(data));
+        
+        document.getElementById('item-desc').value = '';
+        document.getElementById('item-amt').value = '';
+        closePanel();
+        refreshData();
+    }
+
+    function refreshData() {
+        data = JSON.parse(localStorage.getItem(`data_${loggedUser}`)) || [];
+        const container = document.getElementById('history');
+        container.innerHTML = '';
+
+        let balance = 0;
+        let monthE = 0;
+        let yearE = 0;
+        const now = new Date();
+
+        if(data.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: var(--text-sub);">Clean slate! Add something.</p>';
+        }
+
+        data.forEach(item => {
+            balance += item.amt;
+            const d = new Date(item.ts);
+
+            // Month/Year calculations
+            if(item.amt < 0) {
+                if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) monthE += Math.abs(item.amt);
+                if(d.getFullYear() === now.getFullYear()) yearE += Math.abs(item.amt);
+            }
+
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.innerHTML = `
+                <div class="item-info">
+                    <strong>${item.desc}</strong>
+                    <span>${d.toLocaleDateString()}</span>
+                </div>
+                <div class="stat-val ${item.amt > 0 ? 'income' : 'expense'}">
+                    ${item.amt > 0 ? '+' : '-'} ₹${Math.abs(item.amt).toLocaleString('en-IN')}
+                </div>
+            `;
+            container.appendChild(div);
+        });
+
+        document.getElementById('total-balance').innerText = `₹${balance.toLocaleString('en-IN')}`;
+        document.getElementById('month-val').innerText = `₹${monthE.toLocaleString('en-IN')}`;
+        document.getElementById('year-val').innerText = `₹${yearE.toLocaleString('en-IN')}`;
+    }
+</script>
+
+</body>
+</html>
